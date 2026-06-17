@@ -52,7 +52,7 @@ public class MoviesApiTest {
     void getMovies_whenEmpty_returnsEmptyArray() throws Exception {
         HttpResponse<String> resp = callGetMethod("/movies");
 
-        assertEquals(200, resp.statusCode());
+        assertEquals(HttpStatusCode.OK, resp.statusCode());
         assertJsonContentType(resp);
         assertEquals(List.of(), ListOfMoviesTypeToken.parse(resp.body(), gson), "Список фильмов должен быть пустым");
     }
@@ -63,7 +63,7 @@ public class MoviesApiTest {
 
         HttpResponse<String> resp = callGetMethod("/movies");
 
-        assertEquals(200, resp.statusCode());
+        assertEquals(HttpStatusCode.OK, resp.statusCode());
         assertJsonContentType(resp);
         assertMoviesEqual(ListOfMoviesTypeToken.TEST_MOVIES, ListOfMoviesTypeToken.parse(resp.body(), gson));
     }
@@ -74,7 +74,7 @@ public class MoviesApiTest {
 
         HttpResponse<String> resp = callGetMethod("/movies?year=1999");
 
-        assertEquals(200, resp.statusCode());
+        assertEquals(HttpStatusCode.OK, resp.statusCode());
         assertMoviesEqual(List.of(ListOfMoviesTypeToken.TEST_MOVIES.getFirst()),
                 ListOfMoviesTypeToken.parse(resp.body(), gson));
     }
@@ -85,7 +85,7 @@ public class MoviesApiTest {
 
         HttpResponse<String> resp = callGetMethod("/movies?genre=drama");
 
-        assertEquals(200, resp.statusCode());
+        assertEquals(HttpStatusCode.OK, resp.statusCode());
         assertMoviesEqual(ListOfMoviesTypeToken.TEST_MOVIES, ListOfMoviesTypeToken.parse(resp.body(), gson));
     }
 
@@ -93,7 +93,7 @@ public class MoviesApiTest {
     void getMovies_withInvalidYear_returns400() throws Exception {
         HttpResponse<String> resp = callGetMethod("/movies?year=abc");
 
-        assertEquals(400, resp.statusCode());
+        assertEquals(HttpStatusCode.BAD_REQUEST, resp.statusCode());
         assertJsonContentType(resp);
         assertEquals("Некорректный параметр запроса — 'year'", parseJsonBody(resp.body()).get("error").getAsString());
     }
@@ -102,7 +102,7 @@ public class MoviesApiTest {
     void getMovies_withEmptyYear_returns400() throws Exception {
         HttpResponse<String> resp = callGetMethod("/movies?year=");
 
-        assertEquals(400, resp.statusCode());
+        assertEquals(HttpStatusCode.BAD_REQUEST, resp.statusCode());
         assertEquals("Некорректный параметр запроса — 'year'", parseJsonBody(resp.body()).get("error").getAsString());
     }
 
@@ -110,7 +110,7 @@ public class MoviesApiTest {
     void postMovie_withValidDataAndSpaces_returns201AndMovie() throws Exception {
         HttpResponse<String> resp = callPostMethod(Map.of("title", " Матрица ", "year", 1999));
 
-        assertEquals(201, resp.statusCode());
+        assertEquals(HttpStatusCode.CREATED, resp.statusCode());
         assertJsonContentType(resp);
 
         Movie movie = gson.fromJson(resp.body(), Movie.class);
@@ -132,7 +132,7 @@ public class MoviesApiTest {
     void postMovie_withEmptyTitle_returns422() throws Exception {
         HttpResponse<String> resp = callPostMethod(Map.of("title", "   ", "year", 1975));
 
-        assertEquals(422, resp.statusCode());
+        assertEquals(HttpStatusCode.UNPROCESSABLE_CONTENT, resp.statusCode());
         JsonObject jsonObject = parseJsonBody(resp.body());
         assertEquals("Ошибка валидации", jsonObject.get("error").getAsString(), "От сервера не получено корректное сообщение об ошибке");
         assertTrue(containsDetailsString(jsonObject, "Название не должно быть пустым"), "Детали ошибки от сервера не содержат нужный ответ");
@@ -143,7 +143,7 @@ public class MoviesApiTest {
         String title = "a".repeat(101);
         HttpResponse<String> resp = callPostMethod(Map.of("title", title, "year", 1975));
 
-        assertEquals(422, resp.statusCode());
+        assertEquals(HttpStatusCode.UNPROCESSABLE_CONTENT, resp.statusCode());
         JsonObject jsonObject = parseJsonBody(resp.body());
         assertEquals("Ошибка валидации", jsonObject.get("error").getAsString(), "От сервера не получено корректное сообщение об ошибке");
         assertTrue(containsDetailsString(jsonObject, "Название не должно быть длиннее 100 символов"), "Детали ошибки от сервера не содержат нужный ответ");
@@ -153,7 +153,7 @@ public class MoviesApiTest {
     void postMovie_withInvalidYear_returns422() throws Exception {
         int invalidYear = Year.now().getValue() + 2;
         HttpResponse<String> resp = callPostMethod(Map.of("title", "Фильм", "year", invalidYear));
-        assertEquals(422, resp.statusCode());
+        assertEquals(HttpStatusCode.UNPROCESSABLE_CONTENT, resp.statusCode());
         JsonObject jsonObject = parseJsonBody(resp.body());
         assertEquals("Ошибка валидации", jsonObject.get("error").getAsString(), "От сервера не получено корректное сообщение об ошибке");
         assertTrue(containsDetailsString(jsonObject, "Год должен быть между 1888 и " + (Year.now().getValue() + 1)), "Детали ошибки от сервера не содержат нужный ответ");
@@ -163,7 +163,7 @@ public class MoviesApiTest {
     void postMovie_withMissingYear_returns422() throws Exception {
         HttpResponse<String> resp = postRawJson("{\"title\":\"Фильм\"}");
 
-        assertEquals(422, resp.statusCode());
+        assertEquals(HttpStatusCode.UNPROCESSABLE_CONTENT, resp.statusCode());
         JsonObject jsonObject = parseJsonBody(resp.body());
         assertEquals("Ошибка валидации", jsonObject.get("error").getAsString(), "От сервера не получено корректное сообщение об ошибке");
         assertTrue(containsDetailsString(jsonObject, "Год должен быть между 1888 и " + (Year.now().getValue() + 1)), "Детали ошибки от сервера не содержат нужный ответ");
@@ -173,7 +173,7 @@ public class MoviesApiTest {
     void postMovie_withInvalidJson_returns422() throws Exception {
         HttpResponse<String> resp = postRawJson("{invalid");
 
-        assertEquals(422, resp.statusCode());
+        assertEquals(HttpStatusCode.UNPROCESSABLE_CONTENT, resp.statusCode());
         assertTrue(resp.body().contains("некорректный JSON"));
 
         JsonObject jsonObject = parseJsonBody(resp.body());
@@ -191,7 +191,7 @@ public class MoviesApiTest {
 
         HttpResponse<String> resp = send(req);
 
-        assertEquals(415, resp.statusCode());
+        assertEquals(HttpStatusCode.UNSUPPORTED_MEDIA_TYPE, resp.statusCode());
 
         JsonObject jsonObject = parseJsonBody(resp.body());
         assertEquals("Неподдерживаемый тип содержимого", jsonObject.get("error").getAsString(), "От сервера не получено корректное сообщение об ошибке");
@@ -203,7 +203,7 @@ public class MoviesApiTest {
 
         HttpResponse<String> resp = callGetMethod("/movies/2");
 
-        assertEquals(200, resp.statusCode());
+        assertEquals(HttpStatusCode.OK, resp.statusCode());
         Movie movie = gson.fromJson(resp.body(), Movie.class);
         assertEquals(2, movie.id());
         assertEquals("Начало", movie.title());
@@ -214,7 +214,7 @@ public class MoviesApiTest {
     void getMovieById_whenNotFound_returns404() throws Exception {
         HttpResponse<String> resp = callGetMethod("/movies/999");
 
-        assertEquals(404, resp.statusCode());
+        assertEquals(HttpStatusCode.NOT_FOUND, resp.statusCode());
         assertTrue(resp.body().contains("Фильм не найден"));
     }
 
@@ -222,7 +222,7 @@ public class MoviesApiTest {
     void getMovieById_withInvalidId_returns400() throws Exception {
         HttpResponse<String> resp = callGetMethod("/movies/abc");
 
-        assertEquals(400, resp.statusCode());
+        assertEquals(HttpStatusCode.BAD_REQUEST, resp.statusCode());
         assertTrue(resp.body().contains("Некорректный ID"));
     }
 
@@ -230,7 +230,7 @@ public class MoviesApiTest {
     void getMovieById_withExtraPath_returns404() throws Exception {
         HttpResponse<String> resp = callGetMethod("/movies/1/extra");
 
-        assertEquals(404, resp.statusCode());
+        assertEquals(HttpStatusCode.NOT_FOUND, resp.statusCode());
         assertTrue(resp.body().contains("Фильм не найден"));
     }
 
@@ -240,7 +240,7 @@ public class MoviesApiTest {
 
         HttpResponse<String> resp = delete("/movies/3");
 
-        assertEquals(204, resp.statusCode());
+        assertEquals(HttpStatusCode.NO_CONTENT, resp.statusCode());
         assertEquals("", resp.body());
 
         HttpResponse<String> getResp = callGetMethod("/movies");
@@ -259,7 +259,7 @@ public class MoviesApiTest {
     void deleteMovieById_whenNotFound_returns404() throws Exception {
         HttpResponse<String> resp = delete("/movies/999");
 
-        assertEquals(404, resp.statusCode());
+        assertEquals(HttpStatusCode.NOT_FOUND, resp.statusCode());
         assertTrue(resp.body().contains("Фильм не найден"));
     }
 
@@ -272,7 +272,7 @@ public class MoviesApiTest {
 
         HttpResponse<String> resp = send(req);
 
-        assertEquals(405, resp.statusCode());
+        assertEquals(HttpStatusCode.METHOD_NOT_ALLOWED, resp.statusCode());
         assertTrue(resp.body().contains("Метод не поддерживается"));
     }
 
@@ -287,7 +287,7 @@ public class MoviesApiTest {
 
         HttpResponse<String> resp = send(req);
 
-        assertEquals(405, resp.statusCode());
+        assertEquals(HttpStatusCode.METHOD_NOT_ALLOWED, resp.statusCode());
         assertTrue(resp.body().contains("Метод не поддерживается"));
     }
 
@@ -344,7 +344,7 @@ public class MoviesApiTest {
         for (int i = 0; i < expected.size(); i++) {
             Movie exp = expected.get(i);
             Movie act = actual.get(i);
-            assertEquals(exp.id(), act.id(), "Id полученного фильма не соответсвует сохраненному");
+            assertEquals(exp.id(), act.id(), "Id полученного фильма не соответствует сохраненному");
             assertEquals(exp.title(), act.title(), "Название полученного фильма не соответствует сохраненному");
             assertEquals(exp.year(), act.year(), "Год выпуска полученного фильма не соответствует сохраненному");
         }

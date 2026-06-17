@@ -21,6 +21,6 @@ abstract class BaseHttpHandler implements HttpHandler {
     }
 
     protected void sendNoContent(HttpExchange ex) throws IOException {
-        ex.sendResponseHeaders(204, -1);
+        ex.sendResponseHeaders(HttpStatusCode.NO_CONTENT, -1);
     }
 }

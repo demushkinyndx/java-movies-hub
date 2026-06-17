@@ -14,12 +14,4 @@ public class ErrorResponse {
         this.error = error;
         this.details = details;
     }
-
-    public String getError() {
-        return error;
-    }
-
-    public List<String> getDetails() {
-        return details;
-    }
 }
