@@ -114,7 +114,7 @@ public class MoviesApiTest {
         assertJsonContentType(resp);
 
         Movie movie = gson.fromJson(resp.body(), Movie.class);
-        assertEquals(1, movie.id(),"Id полученного фильма не соответствует Id сохраненного");
+        assertEquals(1, movie.id(), "Id полученного фильма не соответствует Id сохраненного");
         assertEquals("Матрица", movie.title(), "Название полученного фильма не соответствует сохраненному");
         assertEquals(1999, movie.year(), "Год выпуска полученного фильма не соответствует сохраненному");
     }
@@ -349,6 +349,7 @@ public class MoviesApiTest {
             assertEquals(exp.year(), act.year(), "Год выпуска полученного фильма не соответствует сохраненному");
         }
     }
+
     private boolean containsDetailsString(JsonObject jsonObject, String stringPattern) {
         JsonArray detailsArray = jsonObject.getAsJsonArray("details");
         for (int i = 0; i < detailsArray.size(); i++) {
