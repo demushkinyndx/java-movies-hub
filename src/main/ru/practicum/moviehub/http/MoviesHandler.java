@@ -18,7 +18,7 @@ import java.util.Optional;
 
 class MoviesHandler extends BaseHttpHandler {
 
-    private static final Gson gson = new GsonBuilder()
+    private final Gson gson = new GsonBuilder()
             .disableHtmlEscaping()
             .create();
     private static final String MOVIES_PATH = "/movies";

@@ -1,12 +1,12 @@
 package ru.practicum.moviehub.http;
 
 public class HttpStatusCode {
-    public final static int UNPROCESSABLE_CONTENT = 422;
-    public final static int UNSUPPORTED_MEDIA_TYPE = 415;
-    public final static int NOT_FOUND = 404;
-    public final static int METHOD_NOT_ALLOWED = 405;
-    public final static int BAD_REQUEST = 400;
-    public final static int NO_CONTENT = 204;
-    public final static int OK = 200;
-    public final static int CREATED = 201;
+    public static final int UNPROCESSABLE_CONTENT = 422;
+    public static final int UNSUPPORTED_MEDIA_TYPE = 415;
+    public static final int NOT_FOUND = 404;
+    public static final int METHOD_NOT_ALLOWED = 405;
+    public static final int BAD_REQUEST = 400;
+    public static final int NO_CONTENT = 204;
+    public static final int OK = 200;
+    public static final int CREATED = 201;
 }
