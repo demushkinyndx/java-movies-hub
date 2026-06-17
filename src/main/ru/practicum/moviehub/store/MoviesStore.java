@@ -20,7 +20,7 @@ public class MoviesStore {
 
     public Movie add(String title, int year) {
         Movie movie = new Movie(nextId++, title, year);
-        movies.put(movie.getId(), movie);
+        movies.put(movie.id(), movie);
         return movie;
     }
 
@@ -30,7 +30,7 @@ public class MoviesStore {
 
     public List<Movie> getAll() {
         List<Movie> result = new ArrayList<>(movies.values());
-        result.sort(Comparator.comparingLong(Movie::getId));
+        result.sort(Comparator.comparingLong(Movie::id));
         return result;
     }
 
@@ -41,7 +41,7 @@ public class MoviesStore {
     public List<Movie> findByYear(int year) {
         List<Movie> result = new ArrayList<>();
         for (Movie movie : getAll()) {
-            if (movie.getYear() == year) {
+            if (movie.year() == year) {
                 result.add(movie);
             }
         }

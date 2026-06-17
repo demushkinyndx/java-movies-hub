@@ -114,9 +114,9 @@ public class MoviesApiTest {
         assertJsonContentType(resp);
 
         Movie movie = gson.fromJson(resp.body(), Movie.class);
-        assertEquals(1, movie.getId(),"Id полученного фильма не соответствует Id сохраненного");
-        assertEquals("Матрица", movie.getTitle(), "Название полученного фильма не соответствует сохраненному");
-        assertEquals(1999, movie.getYear(), "Год выпуска полученного фильма не соответствует сохраненному");
+        assertEquals(1, movie.id(),"Id полученного фильма не соответствует Id сохраненного");
+        assertEquals("Матрица", movie.title(), "Название полученного фильма не соответствует сохраненному");
+        assertEquals(1999, movie.year(), "Год выпуска полученного фильма не соответствует сохраненному");
     }
 
 
@@ -205,9 +205,9 @@ public class MoviesApiTest {
 
         assertEquals(200, resp.statusCode());
         Movie movie = gson.fromJson(resp.body(), Movie.class);
-        assertEquals(2, movie.getId());
-        assertEquals("Начало", movie.getTitle());
-        assertEquals(2010, movie.getYear());
+        assertEquals(2, movie.id());
+        assertEquals("Начало", movie.title());
+        assertEquals(2010, movie.year());
     }
 
     @Test
@@ -293,7 +293,7 @@ public class MoviesApiTest {
 
     private void postAllMovies() throws Exception {
         for (Movie movie : ListOfMoviesTypeToken.TEST_MOVIES) {
-            callPostMethod(Map.of("title", movie.getTitle(), "year", movie.getYear()));
+            callPostMethod(Map.of("title", movie.title(), "year", movie.year()));
         }
     }
 
@@ -344,9 +344,9 @@ public class MoviesApiTest {
         for (int i = 0; i < expected.size(); i++) {
             Movie exp = expected.get(i);
             Movie act = actual.get(i);
-            assertEquals(exp.getId(), act.getId(), "Id полученного фильма не соответсвует сохраненному");
-            assertEquals(exp.getTitle(), act.getTitle(), "Название полученного фильма не соответствует сохраненному");
-            assertEquals(exp.getYear(), act.getYear(), "Год выпуска полученного фильма не соответствует сохраненному");
+            assertEquals(exp.id(), act.id(), "Id полученного фильма не соответсвует сохраненному");
+            assertEquals(exp.title(), act.title(), "Название полученного фильма не соответствует сохраненному");
+            assertEquals(exp.year(), act.year(), "Год выпуска полученного фильма не соответствует сохраненному");
         }
     }
     private boolean containsDetailsString(JsonObject jsonObject, String stringPattern) {
