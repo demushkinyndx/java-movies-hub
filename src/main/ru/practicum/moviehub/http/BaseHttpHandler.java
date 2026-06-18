@@ -18,9 +18,11 @@ abstract class BaseHttpHandler implements HttpHandler {
         try (OutputStream os = ex.getResponseBody()) {
             os.write(bytes);
         }
+        ex.close();
     }
 
     protected void sendNoContent(HttpExchange ex) throws IOException {
         ex.sendResponseHeaders(HttpStatusCode.NO_CONTENT, -1);
+        ex.close();
     }
 }
