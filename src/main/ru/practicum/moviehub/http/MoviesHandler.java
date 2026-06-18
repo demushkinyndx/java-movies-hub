@@ -42,7 +42,7 @@ class MoviesHandler extends BaseHttpHandler {
             }
 
         } catch (Exception e) {
-            sendJson(ex, 500, gson.toJson(new ErrorResponse("Внутренняя ошибка сервера")));
+            sendJson(ex, HttpStatusCode.INTERNAL_SERVER_ERROR, gson.toJson(new ErrorResponse("Внутренняя ошибка сервера")));
         }
     }
 
